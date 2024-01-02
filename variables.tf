@@ -1,3 +1,11 @@
+variable "aws_profile" {
+  
+}
+
+variable "aws_region" {
+  
+}
+
 variable "repo_name" {
   type    = string
   default = "video-repo"
