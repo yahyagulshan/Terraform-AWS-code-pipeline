@@ -19,8 +19,8 @@ in this article, we used AWS Code Commit as a  resource. we already created this
 * in aws code pipeline we first create stage for build
 * 2nd build for validate
 * 3rd build for plan
-* 4th build for approve
-* when our pipeline approched  to approve build sns send email for approval
+* 4th build for approval
+* when our pipeline approched  to approve build sns send email for approval (Email send to subscription which we add in our SNS topic)
 * then we manually hit "approve" or "reject" button on AWS Code Pipeline
 * if we hit "approve" the pipeline run further and complete the step or if we run "reject" the pipeline not running
 
