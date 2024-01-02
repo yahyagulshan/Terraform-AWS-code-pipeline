@@ -1,0 +1,67 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: |
+  Create the infrastrucutre for terraform backend in replication zone. If this
+  template is deleted, it will not delete any resources. Terraform backend
+  stores infrastrucutre as code that if deleted, will cause some serious havoc
+  for current infrastrucutre and updates
+
+Parameters:
+  AccountName:
+    Type: String
+    Description: Account name of the resources being deployed. Used for s3 naming
+  Owner:
+    Type: String
+    Description: Owner name of the resources being deployed. Used for s3 naming
+
+Resources:
+  DefaultKmsKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: kms key for terraform backend
+      Enabled: true
+      EnableKeyRotation: true
+      KeyPolicy:
+        Version: "2012-10-17"
+        Id: kms-default
+        Statement:
+          - Sid: enable iam user permissions
+            Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
+            Action: kms:*
+            Resource: "*"
+      Tags:
+        - Key: Name
+          Value: !Ref AWS::StackName
+    DeletionPolicy: Retain
+
+  TerraformReplicationS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${Owner}-${AccountName}-${AWS::StackName}-${AWS::Region}-repl"
+      AccessControl: Private
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: "aws:kms"
+              KMSMasterKeyID: !Ref DefaultKmsKey
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Enabled
+      Tags:
+        - Key: Name
+          Value: !Sub "${Owner}-${AccountName}-${AWS::StackName}-${AWS::Region}-repl"
+    DeletionPolicy: Retain
+
+Outputs:
+  DefaultKmsKeyArn:
+    Value: !GetAtt DefaultKmsKey.Arn
+  ReplicationBucketName:
+    Value: !Ref TerraformReplicationS3Bucket
+  ReplicationBucketArn:
+    Value: !GetAtt TerraformReplicationS3Bucket.Arn
