@@ -15,7 +15,7 @@ Before you begin, make sure you have the following:
 
    Now use the below commands for push changes on the aws code commit.
 
-`git config --local user.name "yahya-admin-at-960742198541"`
+`git config --local user.name "yahya-admin"`
 
 `git config --local user.email abc@gmail.com`
 
