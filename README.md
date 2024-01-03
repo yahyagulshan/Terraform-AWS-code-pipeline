@@ -5,19 +5,20 @@ Before you begin, make sure you have the following:
 1. **AWS Credentials and Configure**: Ensure you have AWS credentials configured with the necessary permissions to create resources.
 2. **Create AWS CodeCommit Repository and setup**: Create AWS CodeCommit Repo manually from AWS web Console .
 3. **Terraform**: Install Terraform on your machine. Refer to the [official Terraform installation guide](https://learn.hashicorp.com/tutorials/terraform/install-cli) for instructions.
-4. **Create Terraform Backend**: Go to the Terraform Backend directory and create the Terraform backend. **DynamoDB Table** from output
+`this step is extra here for good practise of backend`4. **Create Terraform Backend**: Go to the Terraform Backend directory and create the Terraform backend. **DynamoDB Table** from output
 5. **Create SNS**: manually create AWS SNS topin on AWS and its subscription for notifying.
 6. **Create AWS Pipeline**: for pipeline clone this repo on your local and run command
 `terraform init`
+
 `terraform plan`
 
 when we run `terraform plan` command  terraform state file created on our local 
 
 now go for terraform apply
 `terraform apply`
-## Usage 📋
+## Usage 
 
-## Key Files 🛸
+## Key Files 
 
 * `main.tf`: The main Terraform configuration file where the AWS resources, including the SNS topic, are defined. Modify this file to customize the infrastructure according to your needs.
 
