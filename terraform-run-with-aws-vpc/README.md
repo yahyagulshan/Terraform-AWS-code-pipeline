@@ -32,5 +32,3 @@ Before you begin, make sure you have the following:
 
  * `env_vars.tfvars`: Sample file for defining environment variables specific to the Terraform configuration.
  * `backend.tf`: in this file S3 bucket and dynamodb name should be changed as per our backend bucket created name. otherwise we need to "##" uncomment all the file .
-
-
