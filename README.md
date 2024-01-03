@@ -31,4 +31,5 @@ now go for terraform apply
 * `variables.tf`: this file have the value of "repo-name", "code-build-project", "default_branch"
 * `S3.tf`: this file have S3 bucket name
 
+## for create code commit repo on aws follow `terraform-run-with-aws-vpc` folder which are place in this directory
 
