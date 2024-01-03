@@ -14,4 +14,4 @@ environment = "prod"
 ##################################
 
 tls_subject_common_name     = "int.test.com"
-endpoint_client_cidr_block  = "10.100.0.0/16"
+endpoint_client_cidr_block  = "10.10.0.0/16"
