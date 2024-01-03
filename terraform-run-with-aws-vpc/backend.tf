@@ -6,7 +6,7 @@ terraform {
   backend "s3" {
     region         = "us-east-1"
     key            = "prod/terraform.tfstate"
-    bucket         = "whp-mission-prod-terraform-backend-us-east-1"
+    bucket         = "xxxxxxxxxxx"
     dynamodb_table = "terraform-backend.lock"
     encrypt        = true
   }
