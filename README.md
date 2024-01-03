@@ -6,7 +6,9 @@ Before you begin, make sure you have the following:
 2. **Create AWS CodeCommit Repository and setup**: Create AWS CodeCommit Repo manually from AWS web Console .
 3. **Terraform**: Install Terraform on your machine. Refer to the [official Terraform installation guide](https://learn.hashicorp.com/tutorials/terraform/install-cli) for instructions.
 
-`this step is extra here for good practise of backend`4. **Create Terraform Backend**: Go to the Terraform Backend directory and create the Terraform backend. **DynamoDB Table** from output
+`this step is extra here for good practise of backend`
+
+4. **Create Terraform Backend**: Go to the Terraform Backend directory and create the Terraform backend. **DynamoDB Table** from output
 
 5. **Create SNS**: manually create AWS SNS topin on AWS and its subscription for notifying.
 
