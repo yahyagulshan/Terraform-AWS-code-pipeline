@@ -21,9 +21,9 @@ Before you begin, make sure you have the following:
 
 `git config --local init.defaultBranch main`
 
-`git add test.tf`
+`git add backend.tf data_sources.tf env_vars.tfvars locals.tf variables.tf vpc.tf `
 
-`git commit -m "add new file test.tf"`
+`git commit -m "add new files backend.tf data_sources.tf env_vars.tfvars locals.tf variables.tf vpc.tf"`
 
 `git push origin main`
      ```
