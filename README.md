@@ -26,8 +26,6 @@ now go for terraform apply
 
 ## Key Files 
 
-* `main.tf`: The main Terraform configuration file where the AWS resources, including the SNS topic, are defined. Modify this file to customize the infrastructure according to your needs.
-
 * `variables.tf`: this file have the value of "repo-name", "code-build-project", "default_branch"
 * `S3.tf`: this file have S3 bucket name
 
