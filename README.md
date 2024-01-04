@@ -14,16 +14,16 @@ this Terraform configuration sets up AWS resource with AWS developer tools pipel
 
 ## Usage
 
-Add Terraform Backend Config and SNS topic ARN:
+### Add Terraform Backend Config and SNS topic ARN:
 
-* Open backend.tf and add names of AWS S3 bucket name and AWS DynamDB table from output of Create Terraform Backend step
-* Open env_vars.tfvars Add appopriate values
+* Open `backend.tf` and add names of AWS S3 bucket name and AWS DynamDB table from output of Create Terraform Backend step
+* Open `env_vars.tfvars` Add appopriate values
 
 ## key files
 
-* variables.tf: This file declares the input variables used in the configuration. Update the variable values in the env_vars.tfvars file to match your requirements
+* `variables.tf:` This file declares the input variables used in the configuration. Update the variable values in the `env_vars.tfvars` file to match your requirements
 
-* env_vars.tfvars: Sample file for defining environment variables specific to the Terraform configuration.
+* `env_vars.tfvars:` Sample file for defining environment variables specific to the Terraform configuration.
 
 ## Directory Structure
 
