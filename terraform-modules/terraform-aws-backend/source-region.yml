@@ -1,0 +1,170 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  Create the infrastrucutre for terraform backend. If this template is deleted,
+  it will not delete any resources. Terraform backend stores infrastrucutre as
+  code that if deleted, will cause some serious havoc for current infrastrucutre
+  and updates
+
+Parameters:
+  AccountName:
+    Type: String
+    Description: Account name of the resources being deployed. Used for s3 naming
+  DynamoDbReadCapacityUnits:
+    Type: Number
+    Description: The read capacity for the dynamodb
+    Default: 2
+  DynamoDbWriteCapacityUnits:
+    Type: Number
+    Description: The write capacity for the dynamodb
+    Default: 2
+  Owner:
+    Type: String
+    Description: Owner name of the resources being deployed. Used for s3 naming
+  S3ReplicationKmsArn:
+    Type: String
+    Description: The KMS key used for the s3 replication bucket
+  S3ReplicationBucketArn:
+    Type: String
+    Description: The ARN of the s3 replication bucket
+
+Resources:
+  DefaultKmsKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: KMS key for terraform backend
+      Enabled: true
+      EnableKeyRotation: true
+      KeyPolicy:
+        Version: "2012-10-17"
+        Id: kms-default
+        Statement:
+          - Sid: Enable IAM User Permissions
+            Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
+            Action: kms:*
+            Resource: "*"
+      Tags:
+        - Key: Name
+          Value: !Ref AWS::StackName
+    DeletionPolicy: Retain
+
+  S3BucketReplicationIamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref AWS::StackName
+      Description: IAM role for s3 teraform backend
+      Path: /
+      Policies:
+        - PolicyName: root
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - kms:Decrypt
+                  - s3:ListBucket
+                  - s3:GetObjectVersionAcl
+                  - s3:GetObjectVersionForReplication
+                  - s3:GetReplicationConfiguration
+                Resource:
+                  - !GetAtt DefaultKmsKey.Arn
+                  - !Sub "arn:aws:s3:::${Owner}-${AccountName}-${AWS::StackName}-${AWS::Region}"
+                  - !Sub "arn:aws:s3:::${Owner}-${AccountName}-${AWS::StackName}-${AWS::Region}/*"
+              - Effect: Allow
+                Action:
+                  - kms:Encrypt
+                  - s3:GetObjectVersionTagging
+                  - s3:ReplicateObject
+                  - s3:ReplicateTags
+                Resource:
+                  - !Ref S3ReplicationKmsArn
+                  - !Ref S3ReplicationBucketArn
+                  - !Sub "${S3ReplicationBucketArn}/*"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - "s3.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Tags:
+        - Key: Name
+          Value: !Ref AWS::StackName
+    DeletionPolicy: Retain
+
+  TerraformS3Bucket:
+    Type: AWS::S3::Bucket
+    DependsOn: S3BucketReplicationIamRole
+    Properties:
+      BucketName: !Sub "${Owner}-${AccountName}-${AWS::StackName}-${AWS::Region}"
+      AccessControl: Private
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: "aws:kms"
+              KMSMasterKeyID: !Ref DefaultKmsKey
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      ReplicationConfiguration:
+        Role: !GetAtt S3BucketReplicationIamRole.Arn
+        Rules:
+          - Id: cross-region-replication
+            Destination:
+              Bucket: !Ref S3ReplicationBucketArn
+              EncryptionConfiguration:
+                ReplicaKmsKeyID: !Ref S3ReplicationKmsArn
+              StorageClass: STANDARD
+            SourceSelectionCriteria:
+              SseKmsEncryptedObjects:
+                Status: Enabled
+            Status: Enabled
+      VersioningConfiguration:
+        Status: Enabled
+      Tags:
+        - Key: Name
+          Value: !Sub "${Owner}-${AccountName}-${AWS::StackName}-${AWS::Region}"
+    DeletionPolicy: Retain
+
+  TerraformDynamoDbTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${Owner}-${AccountName}-${AWS::StackName}-${AWS::Region}.lock"
+      AttributeDefinitions:
+        - AttributeName: LockID
+          AttributeType: S
+      KeySchema:
+        - AttributeName: LockID
+          KeyType: HASH
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      ProvisionedThroughput:
+        ReadCapacityUnits: !Ref DynamoDbReadCapacityUnits
+        WriteCapacityUnits: !Ref DynamoDbWriteCapacityUnits
+      SSESpecification:
+        KMSMasterKeyId: !GetAtt DefaultKmsKey.Arn
+        SSEEnabled: true
+        SSEType: KMS
+      Tags:
+        - Key: Name
+          Value: !Sub "${Owner}-${AccountName}-${AWS::StackName}-${AWS::Region}.lock"
+    DeletionPolicy: Retain
+
+Outputs:
+  Region:
+    Value: !Ref AWS::Region
+  TerraformBucketArn:
+    Value: !GetAtt TerraformS3Bucket.Arn
+  TerraformBucketName:
+    Value: !Ref TerraformS3Bucket
+  TerraformDynamoDbTableArn:
+    Value: !GetAtt TerraformDynamoDbTable.Arn
+  TerraformDynamoDbTableName:
+    Value: !Ref TerraformDynamoDbTable
+  TerraformKmsKeyArn:
+    Value: !GetAtt DefaultKmsKey.Arn
