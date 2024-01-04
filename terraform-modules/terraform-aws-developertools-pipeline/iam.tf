@@ -1,14 +1,9 @@
-#############################################
-##  AWS IAM Role for CodeBuild and Polices ##
-#############################################
-
-resource "aws_iam_role" "codebuild" {
-  name               = "${var.codebuild_project_name}-codebuild-service-role"
-  assume_role_policy = data.aws_iam_policy_document.codebuild.json
+resource "aws_iam_role" "example" {
+  name               = "${var.codebuild_project_name_validate}-service-role"
+  assume_role_policy = data.aws_iam_policy_document.aws_iam_policy_document.json
 }
 
-
-data "aws_iam_policy_document" "codebuild" {
+data "aws_iam_policy_document" "aws_iam_policy_document" {
   statement {
     actions = ["sts:AssumeRole"]
     principals {
@@ -18,17 +13,13 @@ data "aws_iam_policy_document" "codebuild" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "codebuild" {
-  role       = aws_iam_role.codebuild.name
+resource "aws_iam_role_policy_attachment" "attach" {
+  role       = aws_iam_role.example.name
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
 
-################################################
-##  AWS IAM Role for CodePipeline and Polices ##
-################################################
-
-resource "aws_iam_role" "codepipeline" {
-  name               = "${var.codebuild_project_name}-codepipeline-service-role"
+resource "aws_iam_role" "codepipeline_role" {
+  name               = "codepipeline-service-role"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -44,8 +35,7 @@ resource "aws_iam_role" "codepipeline" {
 }
 EOF
 }
-
-resource "aws_iam_role_policy_attachment" "codecommit" {
-  role       = aws_iam_role.codepipeline.name
+resource "aws_iam_role_policy_attachment" "code-commit" {
+  role       = aws_iam_role.codepipeline_role.name
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }

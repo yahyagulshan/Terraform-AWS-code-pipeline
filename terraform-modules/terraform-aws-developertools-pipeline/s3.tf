@@ -1,11 +1,5 @@
-#############################################
-##  AWS S3 Bucket for Codepipeline ##
-#############################################
-
-module "codepipeline_bucket" {
-  source        = "../terraform-aws-s3-bucket"
-  bucket        = "${var.codepipeline_name}-${random_uuid.s3.result}"
+resource "aws_s3_bucket" "example_bucket" {
+  bucket = "pipeline-artifact-terraform-pipeline-123654"
+  acl    = "private" # Access Control List (ACL) for the bucket
   force_destroy = true
 }
-
-resource "random_uuid" "s3" {}
