@@ -259,21 +259,6 @@ EOF
 data "aws_sns_topic" "example" {
   name = "terraform-plan-ready"
 }
-
-# resource "null_resource" "send_notification" {
-#   provisioner "local-exec" {
-#     command = <<EOT
-#       aws sns publish \
-#         --topic-arn ${aws_sns_topic.example.arn} \
-#         --message "Terraform plan is ready for review: $TF_PLAN_FILE"
-#     EOT
-#   }
-
-#   triggers = {
-#     terraform_plan = "run"
-#   }
-# }
-
 ###############################################
 
 

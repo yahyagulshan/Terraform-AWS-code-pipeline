@@ -1,28 +1,46 @@
-# Terraform-AWS-code-pipeline
-for creating the Terraform backend go into the/create-terraform-backend folder and follow the instructions as per README.md in there.
+this Terraform configuration sets up AWS resource with AWS developer tools pipeline
 
----
-### Change in Make file
-when we done with backend creation steps have Dynamodb table name and S3 bucket name need to replace these in line #7 and #8
+## Prerequisites
 
----
-### For Region change 
-for change the region we need to replace the name of the directory /us-east-1
+1- Configure AWS credentials with necessery permission.
 
-### Source code
-in this article, we used AWS Code Commit as a  resource. we already created this directory named "video-repo"  . and created file there when the AWS Code Pipeline runs AWS VPC should be created.
+2- Create AWS Code Commit Repository
 
-### Pipeline
-* in Source we create linux container.
-* download Terraform on this linux container.
-* then run the terraform  
-* in aws code pipeline we first create stage for build
-* 2nd build for validate
-* 3rd build for plan
-* 4th build for approval
-* when our pipeline approched  to approve build sns send email for approval (Email send to subscription which we add in our SNS topic)
-* then we manually hit "approve" or "reject" button on AWS Code Pipeline
-* if we hit "approve" the pipeline run further and complete the step or if we run "reject" the pipeline not running
+3- Install Terraform on local
 
+4- Create Terraform backend using [Create Terraform Backend](./terraform-modules/create-terraform-backend)
 
+5- Create AWS Pipeline resources with using this [Create AWS Pipeline](./terraform-modules/terraform-aws-developertools-pipeline)
 
+## Usage
+
+### Add Terraform Backend Config and SNS topic ARN:
+
+* Open `backend.tf` and add names of AWS S3 bucket name and AWS DynamDB table from output of Create Terraform Backend step
+* Open `env_vars.tfvars` Add appopriate values
+
+## key files
+
+* `variables.tf:` This file declares the input variables used in the configuration. Update the variable values in the `env_vars.tfvars` file to match your requirements
+
+* `env_vars.tfvars:` Sample file for defining environment variables specific to the Terraform configuration.
+
+## Directory Structure
+
+* `backend.tf:` Configures the backend for storing Terraform state remotely.
+
+* `data_sources.tf:` Defines Terraform data sources to fetch information from existing resources.
+
+* `locals.tf:` Declares local variables used within the Terraform configuration.
+
+* `terraform-modules/:` Directory containing reusable Terraform modules.
+
+* `main.tf:` Defines the main infrastructure components.
+
+* `buildspec-templates/:` Directory containing templates for AWS CodeBuild build specifications.
+
+* `env_vars.tfvars:` Sample file for defining environment variables specific to the Terraform configuration.
+
+* `README.md:` The file you are currently reading, providing instructions and details about the repository.
+
+* `variables.tf:` Declares input variables used in the main Terraform configuration.
