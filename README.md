@@ -6,7 +6,7 @@ this Terraform configuration sets up AWS resource with AWS developer tools pipel
 
 2- Create AWS Code Commit Repository
 
-3- Install Terraform on local
+3- Install Terraform on local system
 
 4- Create Terraform backend using [Create Terraform Backend](./terraform-modules/terraform-aws-backend)
 
