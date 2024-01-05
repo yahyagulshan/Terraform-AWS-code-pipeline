@@ -8,7 +8,7 @@ this Terraform configuration sets up AWS resource with AWS developer tools pipel
 
 3- Install Terraform on local
 
-4- Create Terraform backend using [Create Terraform Backend](./terraform-modules/create-terraform-backend)
+4- Create Terraform backend using [Create Terraform Backend](./terraform-modules/terraform-aws-backend)
 
 5- Create AWS Pipeline resources with using this [Create AWS Pipeline](./terraform-modules/terraform-aws-developertools-pipeline)
 
